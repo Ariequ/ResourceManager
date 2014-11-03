@@ -1,0 +1,14 @@
+*.csproj
+
+Library/*
+
+Temp/*
+
+Assembly*
+*.sln
+
+*.userprefs
+
+Assembly-UnityScript-vs.unityproj
+
+Assembly-UnityScript.unityproj
