@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#define USE_ASSETBUNDLE
+using UnityEngine;
 using System.Collections;
 
 public class ResourceManager:MonoBehaviour
@@ -14,62 +15,41 @@ public class ResourceManager:MonoBehaviour
 	#else
 	string.Empty;
 	#endif
-	
-	void OnGUI()
-	{
-		if(GUILayout.Button("Main Assetbundle"))
-		{
-			StartCoroutine(LoadMainGameObject(PathURL + "Prefab0.assetbundle"));
-			StartCoroutine(LoadMainGameObject(PathURL +  "Prefab1.assetbundle"));
-		}
-		
-		if(GUILayout.Button("ALL Assetbundle"))
-		{
-			StartCoroutine(LoadALLGameObject(PathURL + "_Users_kaixin_ResourceManager_Assets_Resources_Scene_1.assetbundle"));
-		}
-		
-	}
-	
-	//读取一个资源
-	
-	private IEnumerator LoadMainGameObject(string path)
-	{
-		WWW bundle = new WWW(path);
-		
-		yield return bundle;
-		
-		//加载到游戏中
-		yield return Instantiate(bundle.assetBundle.mainAsset);
-		
-		bundle.assetBundle.Unload(false);
-	}
-	
-	//读取全部资源
-	
-	private IEnumerator LoadALLGameObject(string path)
-	{
-		WWW bundle = new WWW(path);
-		
-		yield return bundle;
-		
-		//通过Prefab的名称把他们都读取出来
-		Object  obj0 =  bundle.assetBundle.Load("Capsule");
-		Object  obj1 =  bundle.assetBundle.Load("Cube");
-		
-		//加载到游戏中	
-		yield return Instantiate(obj0);
-		yield return Instantiate(obj1);
-		bundle.assetBundle.Unload(false);
-	}	
 
-	public static Object load(string path)
+	public static Object load (string path)
 	{
-		return Resources.Load(path);
+		#if USE_ASSETBUNDLE
+		WWW bundle = new WWW (PathURL + GetAssetBuddleName (path) + ".assetbundle");
+		
+		Object obj0 = bundle.assetBundle.Load (GetResourceName (path));
+		
+		return obj0;
+		#else
+		return Resources.Load (path);
+#endif
 	}
 
-	public static Object load(string path, System.Type type)
+	public static Object load (string path, System.Type type)
 	{
+		#if USE_ASSETBUNDLE
+		WWW bundle = new WWW (PathURL + GetAssetBuddleName (path) + ".assetbundle");
+
+		Object obj0 = bundle.assetBundle.Load (GetResourceName (path), type);
+
+		return obj0;
+#else
 		return Resources.Load(path, type);
+#endif
+	}
+
+	public static string GetAssetBuddleName (string path)
+	{
+		return path.Substring (0, path.LastIndexOf ("/")).Replace ("/", "_");
+	}
+
+	public static string GetResourceName (string path)
+	{
+		return path.Substring (path.LastIndexOf ("/") + 1);
 	}
 
 }

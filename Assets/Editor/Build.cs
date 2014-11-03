@@ -38,7 +38,7 @@ public class Build : Editor
 
 			if (objectList.Count > 0) {
 				string fullName = directory.FullName;
-				string assetbunddleName = fullName.Substring(fullName.IndexOf("Resources")).Replace("/", "_");
+				string assetbunddleName = fullName.Substring(fullName.IndexOf("Resources/") + "Resources/".Length).Replace("/", "_");
 				string targetPath = Application.dataPath + "/StreamingAssets/" + assetbunddleName + ".assetbundle";
 				Debug.Log(objectList[0].name);
 				if (BuildPipeline.BuildAssetBundle (objectList [0], objectList.ToArray(), targetPath, BuildAssetBundleOptions.CollectDependencies)) {
